@@ -12,13 +12,13 @@ public class Castle : MonoBehaviour
         get { return transform.localScale.y; }
         set
         {
-            transform.localScale.Set(1, value, 1);
+            transform.localScale = new Vector3(1, value, 1);
         }
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+        CastleTimer.Instance.Initialize();
     }
 
 
