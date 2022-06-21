@@ -975,7 +975,7 @@ namespace UniRx
 
         public static IObservable<int> ObserveOnMainThread<T>(this IObservable<T> source)
         {
-            return source.ObserveOn(SchedulerUnity.MainThread);
+            return source.ObserveOn(SchedulerUnity.MainThread) as IObservable<int>;
         }
 
         public static IObservable<T> ObserveOnMainThread<T>(this IObservable<T> source, MainThreadDispatchType dispatchType)
@@ -983,7 +983,7 @@ namespace UniRx
             switch (dispatchType)
             {
                 case MainThreadDispatchType.Update:
-                    return source.ObserveOnMainThread(); // faster path
+                    return source.ObserveOnMainThread() as IObservable<T>; // faster path
 
                 // others, bit slower
 
