@@ -35,6 +35,8 @@ public class Castle : MonoBehaviour
         }
     }
 
+    public int ID = 1;
+
     private void Awake()
     {
         CurrentHp = new ReactiveProperty<int>(0);
