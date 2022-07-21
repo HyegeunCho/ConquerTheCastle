@@ -29,7 +29,7 @@ public class RoadManager : MonoSingleton<RoadManager>
     public enum EColor
     {
         Blue = 0,
-        Gree = 1,
+        Green = 1,
         Purple = 2,
         Red = 3,
         Yellow = 4
@@ -74,7 +74,7 @@ public class RoadManager : MonoSingleton<RoadManager>
 
     private void UpdateLine(ref LineRenderer refLine, EColor inColor, Vector3 inFrom, Vector3 inTo)
     {
-        refLine.material.CopyPropertiesFromMaterial(GetMaterial(inColor));
+        refLine.material = GetMaterial(inColor);
         refLine.startWidth = 1f;
         refLine.endWidth = 1f;
         refLine.SetPositions(new Vector3[] {inFrom, inTo});
@@ -106,7 +106,7 @@ public class RoadManager : MonoSingleton<RoadManager>
     public void ConnectCastle(Castle inFrom, Castle inTo)
     {
         RoadInfo key = RoadInfo.Create(inFrom, inTo);
-        if (_currentRoads.ContainsKey(key)) return;
+        if (IsConnected(key)) return;
 
         LineRenderer line = GetLine(EColor.Blue, inFrom.transform.position, inTo.transform.position);
         _currentRoads.Add(key, line);
@@ -115,12 +115,23 @@ public class RoadManager : MonoSingleton<RoadManager>
     public void DisconnectCastle(Castle inFrom, Castle inTo)
     {
         RoadInfo key = RoadInfo.Create(inFrom, inTo);
-        if (!_currentRoads.ContainsKey(key)) return;
-
+        if (!IsConnected(key)) return;
+        
         LineRenderer line = _currentRoads[key];
         if (line == null) return;
 
         ReturnLine(line);
         _currentRoads.Remove(key);
+    }
+
+    public bool IsConnected(Castle inFrom, Castle inTo)
+    {
+        RoadInfo key = RoadInfo.Create(inFrom, inTo);
+        return IsConnected(key);
+    }
+
+    public bool IsConnected(RoadInfo inKey)
+    {
+        return _currentRoads.ContainsKey(inKey);
     }
 }
