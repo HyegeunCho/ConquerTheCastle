@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using HGPlugins.Singleton;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public struct RoadInfo : IEquatable<RoadInfo>
 {
@@ -35,8 +36,7 @@ public class RoadManager : MonoSingleton<RoadManager>
         Yellow = 4
     }
 
-    [SerializeField] private Material[] RoadMaterials;
-
+    private Material[] _roadMaterials;
 
     private Queue<LineRenderer> _linePool;
 
@@ -47,11 +47,16 @@ public class RoadManager : MonoSingleton<RoadManager>
         base.Awake();
         _linePool = new Queue<LineRenderer>();
         _currentRoads = new Dictionary<RoadInfo, LineRenderer>();
+        _roadMaterials = new Material[5];
     }
 
     private Material GetMaterial(EColor inColor)
     {
-        return RoadMaterials[(int) inColor];
+        if (_roadMaterials[(int)inColor] == null)
+        {
+            _roadMaterials[(int)inColor] = Resources.Load<Material>($"Road/Road_{inColor}");
+        }
+        return _roadMaterials[(int) inColor];
     }
 
     private LineRenderer CreateLine(EColor inColor, Vector3 inFrom, Vector3 inTo)
@@ -62,21 +67,26 @@ public class RoadManager : MonoSingleton<RoadManager>
         LineRenderer result = go.AddComponent<LineRenderer>();
 
         UpdateLine(ref result, inColor, inFrom, inTo);
-        // result.material.CopyPropertiesFromMaterial(GetMaterial(inColor));
-        //
-        // result.startWidth = 1f;
-        // result.endWidth = 1f;
-        //
-        // result.SetPositions(new Vector3[] {inFrom, inTo});
 
         return result;
     }
 
     private void UpdateLine(ref LineRenderer refLine, EColor inColor, Vector3 inFrom, Vector3 inTo)
     {
+        refLine.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        
+        refLine.alignment = LineAlignment.TransformZ;
+        refLine.textureMode = LineTextureMode.Tile;
+
+        refLine.shadowCastingMode = ShadowCastingMode.Off;
+        
         refLine.material = GetMaterial(inColor);
         refLine.startWidth = 1f;
         refLine.endWidth = 1f;
+        
+        inFrom.Set(inFrom.x, 0.1f, inFrom.z);
+        inTo.Set(inTo.x, 0.1f, inTo.z);
+        
         refLine.SetPositions(new Vector3[] {inFrom, inTo});
     }
 

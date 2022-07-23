@@ -863,12 +863,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eec2708d2d8ff1042925893bd6ef8eae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RoadMaterials:
-  - {fileID: 2100000, guid: f97838b67c103af47a899f2aa7b421d5, type: 2}
-  - {fileID: 2100000, guid: a762ed4166f9af94d86834022b3d7be3, type: 2}
-  - {fileID: 2100000, guid: 49411a841e24c5f41836d415faa08fab, type: 2}
-  - {fileID: 2100000, guid: 3fdd1a4e0a4dde043a52ed6d10762570, type: 2}
-  - {fileID: 2100000, guid: 287d33611a11545478e3689cf7816f92, type: 2}
 --- !u!114 &1955965300 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8666023192988881668, guid: f7c63af58fc116f45a612f48433d8710, type: 3}
