@@ -2,40 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using HGPlugins.Singleton;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public struct RoadInfo : IEquatable<RoadInfo>
-{
-    public int FromId;
-    public int ToId;
-
-    public bool Equals(RoadInfo inInfo)
-    {
-        return FromId == inInfo.FromId && ToId == inInfo.ToId;
-    }
-
-    public static RoadInfo Create(Castle inFrom, Castle inTo)
-    {
-        return new RoadInfo
-        {
-            FromId = inFrom.ID, ToId = inTo.ID
-        };
-    }
-}
-
 public class RoadManager : MonoSingleton<RoadManager>
 {
-    public enum EColor
-    {
-        Blue = 0,
-        Green = 1,
-        Purple = 2,
-        Red = 3,
-        Yellow = 4
-    }
-
     private Material[] _roadMaterials;
 
     private Queue<LineRenderer> _linePool;
@@ -50,7 +21,7 @@ public class RoadManager : MonoSingleton<RoadManager>
         _roadMaterials = new Material[5];
     }
 
-    private Material GetMaterial(EColor inColor)
+    private Material GetMaterial(Enums.EColor inColor)
     {
         if (_roadMaterials[(int)inColor] == null)
         {
@@ -59,7 +30,7 @@ public class RoadManager : MonoSingleton<RoadManager>
         return _roadMaterials[(int) inColor];
     }
 
-    private LineRenderer CreateLine(EColor inColor, Vector3 inFrom, Vector3 inTo)
+    private LineRenderer CreateLine(Enums.EColor inColor, Vector3 inFrom, Vector3 inTo)
     {
         GameObject go = new GameObject();
         go.transform.SetParent(transform);
@@ -71,7 +42,7 @@ public class RoadManager : MonoSingleton<RoadManager>
         return result;
     }
 
-    private void UpdateLine(ref LineRenderer refLine, EColor inColor, Vector3 inFrom, Vector3 inTo)
+    private void UpdateLine(ref LineRenderer refLine, Enums.EColor inColor, Vector3 inFrom, Vector3 inTo)
     {
         refLine.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
         
@@ -90,7 +61,7 @@ public class RoadManager : MonoSingleton<RoadManager>
         refLine.SetPositions(new Vector3[] {inFrom, inTo});
     }
 
-    private LineRenderer GetLine(EColor inColor, Vector3 inFrom, Vector3 inTo)
+    private LineRenderer GetLine(Enums.EColor inColor, Vector3 inFrom, Vector3 inTo)
     {
         LineRenderer result = null;
         if (_linePool.Count > 0)
@@ -118,7 +89,7 @@ public class RoadManager : MonoSingleton<RoadManager>
         RoadInfo key = RoadInfo.Create(inFrom, inTo);
         if (IsConnected(key)) return;
 
-        LineRenderer line = GetLine(EColor.Blue, inFrom.transform.position, inTo.transform.position);
+        LineRenderer line = GetLine(Enums.EColor.Blue, inFrom.transform.position, inTo.transform.position);
         _currentRoads.Add(key, line);
     }
 
