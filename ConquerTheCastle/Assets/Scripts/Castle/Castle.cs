@@ -16,13 +16,20 @@ public class Castle : MonoBehaviour
 
     public List<Castle> OutSlots;
     
-    
     [Range(1, 10)] public float Height;
     public int MaxHp = 60;
     
     [HideInInspector] public ReactiveProperty<int> CurrentHp;
     
     private int _maxSlots = 1;
+
+    public bool IsAlive
+    {
+        get
+        {
+            return CurrentHp.Value > 0 && gameObject.activeSelf;
+        }
+    }
 
     public bool IsMax => (CurrentHp.Value == MaxHp);
     
@@ -111,5 +118,15 @@ public class Castle : MonoBehaviour
     {
         if (Math.Abs(CurrentHeight - inValue) < MathConstants.FLOAT_COMPARISION_TOLERANCE) return;
         CurrentHeight = inValue;
+    }
+
+    private void CreateSoldier()
+    {
+        
+    }
+
+    private void RequestDepart(Soldier inSoldier, Castle inTarget)
+    {
+        
     }
 }
