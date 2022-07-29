@@ -6,9 +6,13 @@ namespace HGPlugins
 {
     public static class CommonExtensions
     {
-        public static bool IsNullOrEmpty(this IEnumerable value)
+        // public static bool IsNullOrEmpty(this IEnumerable value)
+        // {
+        //     return value.IsNullOrEmpty();
+        // }
+        public static bool IsNullOrEmpty(this IList value)
         {
-            return value.IsNullOrEmpty();
+            return value == null || value.Count == 0;
         }
     }    
 }

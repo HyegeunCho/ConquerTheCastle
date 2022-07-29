@@ -316,7 +316,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TXT_CastleHP: {fileID: 8666023191326247407}
+  _renderer: {fileID: 8666023192762687408}
   Height: 1
   MaxHp: 60
   CurrentHp:
     value: 0
+  ID: 1
+  CastleColor: 0

@@ -13,13 +13,17 @@ public class Castle : MonoBehaviour
     public const int SLOT1_HP = 1;
     
     [SerializeField] private TextMeshPro TXT_CastleHP;
-
-    public List<Castle> OutSlots;
+    [SerializeField] private MeshRenderer _renderer;
     
     [Range(1, 10)] public float Height;
     public int MaxHp = 60;
     
     [HideInInspector] public ReactiveProperty<int> CurrentHp;
+    
+    public int ID = 1;
+    public Enums.EColor CastleColor = Enums.EColor.Blue;
+    
+    private RoadSlots _roadSlots;
     
     private int _maxSlots = 1;
 
@@ -42,12 +46,10 @@ public class Castle : MonoBehaviour
         }
     }
 
-    public int ID = 1;
-
     private void Awake()
     {
         CurrentHp = new ReactiveProperty<int>(0);
-        OutSlots = new List<Castle>();
+        _roadSlots = new RoadSlots();
     }
 
     // Start is called before the first frame update
@@ -56,8 +58,15 @@ public class Castle : MonoBehaviour
         CurrentHp.ObserveOnMainThread().Subscribe(OnUpdateCastleHp).AddTo(this);
 
         CastleTimerManager.Instance.OnSeconds.Subscribe(OnTimerSeconds).AddTo(this);
-        // CastleTimerManager.Instance.OnHalf.Subscribe(OnTimerHalf).AddTo(this);
-        // CastleTimerManager.Instance.OnThird.Subscribe(OnTimerThird).AddTo(this);
+        CastleTimerManager.Instance.OnHalf.Subscribe(OnTimerHalf).AddTo(this);
+        CastleTimerManager.Instance.OnThird.Subscribe(OnTimerThird).AddTo(this);
+
+        SetColor(CastleColor);
+    }
+    
+    public void SetColor(Enums.EColor inColor)
+    {
+        _renderer.material = ResourceManager.GetMaterial(inColor);
     }
     
     private void OnUpdateCastleHp(int inHp)
@@ -84,34 +93,41 @@ public class Castle : MonoBehaviour
 
     private void OnTimerSeconds(long inCount)
     {
-        try
+        if (_roadSlots.Count == 0)
         {
-            if (OutSlots.Count == 0)
-            {
-                RegenerateCastleHp();
-            }
+            RegenerateCastleHp();
         }
-        catch (Exception e)
-        {
-             Debug.LogError($"{e.Message}");
-        }
-        
+
+        if (CurrentHp.Value >= MaxHp / 2f) return;
+
+        Castle target = _roadSlots.NextTarget();
+        if (target == null) return;
+        RequestDepart(target);
     }
 
+    private void OnTimerHalf(long inCount)
+    {
+        if (CurrentHp.Value < MaxHp / 2f) return;
+        if (CurrentHp.Value == MaxHp) return;
+        
+        Castle target = _roadSlots.NextTarget();
+        if (target == null) return;
+        RequestDepart(target);
+    }
+
+    private void OnTimerThird(long inCount)
+    {
+        if (CurrentHp.Value != MaxHp) return;
+        
+        Castle target = _roadSlots.NextTarget();
+        if (target == null) return;
+        RequestDepart(target);
+    }
+    
     private void RegenerateCastleHp()
     {
         if (CurrentHp.Value >= MaxHp) return;
         CurrentHp.Value = CurrentHp.Value + 1;
-    }
-
-    private void OnTimerHalf(int inCount)
-    {
-        
-    }
-
-    private void OnTimerThird(int inCount)
-    {
-        
     }
 
     public void UpdateHeight(float inValue)
@@ -120,13 +136,26 @@ public class Castle : MonoBehaviour
         CurrentHeight = inValue;
     }
 
-    private void CreateSoldier()
+    public void RequestDepart(Castle inTarget)
     {
+        Soldier soldier = SoldierManager.Instance.GetSoldier(CastleColor, this);
+        soldier.MoveTo(inTarget);
+    }
+
+    public void ConnectTo(Castle inTarget)
+    {
+        if (_roadSlots.Count >= _maxSlots) return;
+        if (RoadManager.Instance.IsConnected(this, inTarget)) return;
+        _roadSlots.Add(inTarget);
+        RoadManager.Instance.ConnectCastle(this, inTarget);
         
     }
 
-    private void RequestDepart(Soldier inSoldier, Castle inTarget)
+    public void DisconnectFrom(Castle inTarget)
     {
-        
+        if (_roadSlots.Count == 0) return;
+        if (!RoadManager.Instance.IsConnected(this, inTarget)) return;
+        _roadSlots.Remove(inTarget);
+        RoadManager.Instance.DisconnectCastle(this, inTarget);
     }
 }

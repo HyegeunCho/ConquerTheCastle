@@ -28,11 +28,11 @@ public class GameManager : MonoSingleton<GameManager>
             {
                 if (RoadManager.Instance.IsConnected(from, to))
                 {
-                    RoadManager.Instance.DisconnectCastle(from, to);    
+                    from.DisconnectFrom(to);
                 }
                 else
                 {
-                    RoadManager.Instance.ConnectCastle(from, to);
+                    from.ConnectTo(to);
                 }
             }
             

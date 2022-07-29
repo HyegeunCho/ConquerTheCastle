@@ -7,26 +7,42 @@ public class Soldier : MonoBehaviour
 {
     [SerializeField] private MeshRenderer _renderer;
     
-    private static Material[] _materials = new Material[5];
-    
 
-    private static Material GetMaterial(Enums.EColor inColor)
-    {
-        if (_materials[(int)inColor] == null)
-        {
-            _materials[(int)inColor] = Resources.Load<Material>($"Soldier/Materials/Soldier_{inColor}");
-        }
-        return _materials[(int) inColor];
-    }
+    public float Speed = 0.5f;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Castle TargetCastle { private set; get; } = null;
 
     public void SetColor(Enums.EColor inColor)
     {
-        _renderer.material = GetMaterial(inColor);
+        _renderer.material = ResourceManager.GetMaterial(inColor);
+    }
+
+    public void MoveTo(Castle inTarget)
+    {
+        TargetCastle = inTarget;
+    }
+
+    private void Update()
+    {
+        MoveToTarget(TargetCastle);
+    }
+
+    private void MoveToTarget(Castle inTarget)
+    {
+        if (inTarget == null) return;
+
+        Vector3 direction = inTarget.transform.position - transform.position;
+        transform.Translate(direction.normalized * Speed * Time.deltaTime, Space.World);
+    }
+
+    private void OnDisable()
+    {
+        Drop();
+
+    }
+
+    private void Drop()
+    {
+        TargetCastle = null;
     }
 }

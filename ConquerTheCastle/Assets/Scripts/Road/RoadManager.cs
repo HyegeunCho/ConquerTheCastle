@@ -89,7 +89,7 @@ public class RoadManager : MonoSingleton<RoadManager>
         RoadInfo key = RoadInfo.Create(inFrom, inTo);
         if (IsConnected(key)) return;
 
-        LineRenderer line = GetLine(Enums.EColor.Blue, inFrom.transform.position, inTo.transform.position);
+        LineRenderer line = GetLine(inFrom.CastleColor, inFrom.transform.position, inTo.transform.position);
         _currentRoads.Add(key, line);
     }
 
