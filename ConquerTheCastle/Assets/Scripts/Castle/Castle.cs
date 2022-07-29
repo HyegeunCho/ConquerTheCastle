@@ -49,7 +49,7 @@ public class Castle : MonoBehaviour
 
     private void Awake()
     {
-        CurrentHp = new ReactiveProperty<int>(0);
+        CurrentHp = new ReactiveProperty<int>(1);
         _roadSlots = new RoadSlots();
         
         _trigger.Clear();
@@ -73,7 +73,7 @@ public class Castle : MonoBehaviour
     {
         _renderer.material = ResourceManager.GetMaterial(inColor);
     }
-    
+
     private void OnUpdateCastleHp(int inHp)
     {
         if (inHp >= SLOT3_HP)
@@ -100,7 +100,7 @@ public class Castle : MonoBehaviour
     {
         if (_roadSlots.Count == 0)
         {
-            RegenerateCastleHp();
+            UpdateCastleHp();
         }
 
         if (CurrentHp.Value >= MaxHp / 2f) return;
@@ -129,13 +129,21 @@ public class Castle : MonoBehaviour
         RequestDepart(target);
     }
     
-    private void RegenerateCastleHp()
+    private void UpdateCastleHp(int inValue = 1, Enums.EColor inColor = Enums.EColor.None)
     {
-        if (CurrentHp.Value >= MaxHp) return;
-        CurrentHp.Value = CurrentHp.Value + 1;
+        int nextValue = CurrentHp.Value + inValue;
+        nextValue = Mathf.Min(nextValue, MaxHp);
+        if (nextValue < 0)
+        {
+            CastleColor = inColor == Enums.EColor.None ? CastleColor : inColor;
+            SetColor(CastleColor);
+            nextValue = Mathf.Abs(nextValue);
+        }
+        
+        CurrentHp.Value = nextValue;
     }
 
-    public void UpdateHeight(float inValue)
+    private void UpdateHeight(float inValue)
     {
         if (Math.Abs(CurrentHeight - inValue) < MathConstants.FLOAT_COMPARISION_TOLERANCE) return;
         CurrentHeight = inValue;
@@ -166,6 +174,22 @@ public class Castle : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        throw new NotImplementedException();
+        if (!other.CompareTag(Tags.SOLDIER)) return;
+        
+        Soldier target = other.transform.parent.GetComponent<Soldier>();
+        if (target == null) return;
+        if (ID == target.HomeCastleID) return;
+        
+        UpdateCastleHp(target.AttackPoint * (IsAllyWith(target) ? 1 : -1), target.CurrentColor);
+    }
+    
+    public bool IsAllyWith(Castle inTarget)
+    {
+        return CastleColor == inTarget.CastleColor;
+    }
+
+    public bool IsAllyWith(Soldier inTarget)
+    {
+        return CastleColor == inTarget.CurrentColor;
     }
 }

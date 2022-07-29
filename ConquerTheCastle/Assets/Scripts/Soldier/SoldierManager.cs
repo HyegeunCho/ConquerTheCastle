@@ -45,6 +45,7 @@ public class SoldierManager : MonoSingleton<SoldierManager>
             
             result.transform.SetPositionAndRotation(targetAt, Quaternion.identity);
             result.SetColor(inColor);
+            result.SetHomeCastle(inAt);
             result.gameObject.SetActive(true);
         }
 
