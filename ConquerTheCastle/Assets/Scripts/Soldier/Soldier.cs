@@ -6,11 +6,26 @@ using UnityEngine;
 public class Soldier : MonoBehaviour
 {
     [SerializeField] private MeshRenderer _renderer;
-    
+    [SerializeField] private TriggerDelegator _trigger;
 
     public float Speed = 0.5f;
     
     public Castle TargetCastle { private set; get; } = null;
+
+    private void Awake()
+    {
+        _trigger.Clear();
+    }
+
+    private void Start()
+    {
+        _trigger.DelegateTriggerEnter += OnTriggerEnter;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        throw new NotImplementedException();
+    }
 
     public void SetColor(Enums.EColor inColor)
     {

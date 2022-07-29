@@ -14,6 +14,7 @@ public class Castle : MonoBehaviour
     
     [SerializeField] private TextMeshPro TXT_CastleHP;
     [SerializeField] private MeshRenderer _renderer;
+    [SerializeField] private TriggerDelegator _trigger;
     
     [Range(1, 10)] public float Height;
     public int MaxHp = 60;
@@ -50,6 +51,8 @@ public class Castle : MonoBehaviour
     {
         CurrentHp = new ReactiveProperty<int>(0);
         _roadSlots = new RoadSlots();
+        
+        _trigger.Clear();
     }
 
     // Start is called before the first frame update
@@ -60,6 +63,8 @@ public class Castle : MonoBehaviour
         CastleTimerManager.Instance.OnSeconds.Subscribe(OnTimerSeconds).AddTo(this);
         CastleTimerManager.Instance.OnHalf.Subscribe(OnTimerHalf).AddTo(this);
         CastleTimerManager.Instance.OnThird.Subscribe(OnTimerThird).AddTo(this);
+
+        _trigger.DelegateTriggerEnter += OnTriggerEnter;
 
         SetColor(CastleColor);
     }
@@ -157,5 +162,10 @@ public class Castle : MonoBehaviour
         if (!RoadManager.Instance.IsConnected(this, inTarget)) return;
         _roadSlots.Remove(inTarget);
         RoadManager.Instance.DisconnectCastle(this, inTarget);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        throw new NotImplementedException();
     }
 }
