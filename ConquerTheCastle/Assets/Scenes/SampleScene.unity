@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: ID
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8666023192988881668, guid: f7c63af58fc116f45a612f48433d8710, type: 3}
+      propertyPath: CastleColor
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8666023192988881669, guid: f7c63af58fc116f45a612f48433d8710, type: 3}
       propertyPath: m_Name
       value: Castle (1)
@@ -298,6 +302,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8666023192988881668, guid: f7c63af58fc116f45a612f48433d8710, type: 3}
       propertyPath: ID
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8666023192988881668, guid: f7c63af58fc116f45a612f48433d8710, type: 3}
+      propertyPath: CastleColor
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8666023192988881669, guid: f7c63af58fc116f45a612f48433d8710, type: 3}
